@@ -1,7 +1,7 @@
 test:
   pre:
     - "[[ ! -s \"$(git rev-parse --git-dir)/shallow\" ]] || git fetch --unshallow"
-    - curl https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
+    - curl https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1 > phantomjs-2.1.1
     - sha256sum -c --strict --status phantomjs.sha256
     - sudo mv phantomjs-2.1.1 /usr/local/bin/phantomjs/
   post:
