@@ -357,7 +357,11 @@ in your web browser.
 You can select any table (on the left-hand side) so you can view
 or edit the database contents with a UI.
 
-You can directly connect to the database engine and run commands.
+You can directly connect to the database engine and run SQL commands.
+Remember that in SQL single quotes are used to surround string or date
+constants (double quotes are used to surround table or column names,
+which is unlikely to be needed in our case).
+
 On the local development system, run "rails db" as always.
 To change the database contents of a production system,
 log into that system and use the SQL language to make changes.
