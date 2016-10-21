@@ -21,6 +21,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def create
     @user = User.new(user_params)
     @user.provider = 'local'
@@ -29,9 +30,19 @@ class UsersController < ApplicationController
       flash[:info] = 'Please check your email to activate your account.'
       redirect_to root_url
     else
-      render 'new'
+      @saved_user = User.find_by(email: params[:email])
+      if @saved_user && !@saved_user.activated
+        @saved_user.send_activation_email
+        flash[:info] = 'Activation resent. ' \
+                       'Please check your email to activate your account.'
+        flash.delete(:error)
+        redirect_to root_url
+      else
+        render 'new'
+      end
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def edit
     @user = User.find(params[:id])
