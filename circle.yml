@@ -9,8 +9,7 @@ test:
   post:
 # Split up: bundle exec pronto run -f github text -c=$(git log --pretty=format:%H | tail -1) --exit-code
 # because the exit-code appears to not be provided in the combined command.
-    - bundle exec pronto run -f github text -c=$(git log --pretty=format:%H | tail -1)
-    - bundle exec pronto run text -c=$(git log --pretty=format:%H | tail -1) --exit-code
+    - bundle exec pronto run -f github -c=$(git log --pretty=format:%H | tail -1) --exit-code
     - bundle exec rake ci
 deployment:
   master:
