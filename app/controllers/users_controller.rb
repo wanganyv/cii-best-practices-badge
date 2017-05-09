@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class UsersController < ApplicationController
-  before_action :require_admin,  only: %i(index destroy)
-  before_action :logged_in_user, only: %i(edit update)
-  before_action :correct_user,   only: %i(edit update)
+  before_action :require_admin,  only: %i[index destroy]
+  before_action :logged_in_user, only: %i[edit update]
+  before_action :correct_user,   only: %i[edit update]
   include SessionsHelper
 
   def new
@@ -52,7 +53,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # rubocop: disable Metrics/MethodLength,Metrics/AbcSize
+  # rubocop: disable Metrics/MethodLength
   def destroy
     # We don't do a lot of checking because only admins can run this,
     # but we'll try to prevent some disasters.
@@ -72,7 +73,7 @@ class UsersController < ApplicationController
     end
     redirect_to users_url
   end
-  # rubocop: enable Metrics/MethodLength,Metrics/AbcSize
+  # rubocop: enable Metrics/MethodLength
 
   def redirect_existing
     if @user.activated

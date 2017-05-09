@@ -1,7 +1,10 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
+# rubocop:disable Metrics/ClassLength
 class ProjectTest < ActiveSupport::TestCase
+  using StringRefinements
   setup do
     @user = users(:test_user)
     @project = @user.projects.build(
@@ -46,7 +49,7 @@ class ProjectTest < ActiveSupport::TestCase
 
     # Here we use the full validator.  We stub out the info necessary
     # to create a validator instance to test (we won't really use them).
-    validator = UrlValidator.new(attributes: %i(repo_url project_url))
+    validator = UrlValidator.new(attributes: %i[repo_url project_url])
     assert validator.url_acceptable?(my_url)
     assert validator.url_acceptable?('https://kernel.org')
     assert validator.url_acceptable?('') # Empty allowed.
@@ -88,7 +91,7 @@ class ProjectTest < ActiveSupport::TestCase
   # rubocop:enable Metrics/BlockLength
 
   test 'UTF-8 validator should refute non-UTF-8 encoding' do
-    validator = TextValidator.new(attributes: %i(name description))
+    validator = TextValidator.new(attributes: %i[name description])
     # Don't accept non-UTF-8, even if the individual bytes are acceptable.
     refute validator.text_acceptable?("The best practices badge\255")
     refute validator.text_acceptable?("The best practices badge\xff\xff")
@@ -98,35 +101,62 @@ class ProjectTest < ActiveSupport::TestCase
     refute validator.text_acceptable?("The best practices badge\x0c")
     assert validator.text_acceptable?('The best practices badge.')
   end
+
   # rubocop:disable Metrics/BlockLength
-  test 'test get_criterion_status returns correct values' do
+  test 'test get_criterion_result returns correct values' do
     assert_equal(
-      @unjustified_project.get_criterion_status(Criteria[:contribution]),
-      :criterion_url_required
+      :criterion_url_required,
+      @unjustified_project.get_criterion_result(Criteria[:contribution])
     )
     assert_equal(
-      @unjustified_project.get_criterion_status(Criteria[:release_notes]),
-      :criterion_justification_required
+      :criterion_justification_required,
+      @unjustified_project.get_criterion_result(Criteria[:release_notes])
     )
     assert_equal(
-      @unjustified_project.get_criterion_status(
-        Criteria[:installation_common]
-      ), :criterion_justification_required
+      :criterion_justification_required,
+      @unjustified_project.get_criterion_result(Criteria[:installation_common])
     )
     assert_equal(
-      @unjustified_project.get_criterion_status(Criteria[:test_most]),
-      :criterion_barely
+      :criterion_justification_required,
+      @unjustified_project.get_criterion_result(Criteria[:static_analysis])
     )
     assert_equal(
-      @unjustified_project.get_criterion_status(
+      :criterion_barely,
+      @unjustified_project.get_criterion_result(Criteria[:test_most])
+    )
+    assert_equal(
+      :criterion_failing,
+      @unjustified_project.get_criterion_result(
         Criteria[:crypto_certificate_verification]
-      ), :criterion_failing
+      )
     )
     assert_equal(
-      @unjustified_project.get_criterion_status(
-        Criteria[:build_reproducible]
-      ), :criterion_unknown
+      :criterion_unknown,
+      @unjustified_project.get_criterion_result(Criteria[:build_reproducible])
+    )
+    assert_equal(
+      :criterion_passing,
+      @unjustified_project.get_criterion_result(
+        Criteria[:vulnerability_report_private]
+      )
     )
   end
   # rubocop:enable Metrics/BlockLength
+
+  # We had to add this test for coverage.
+  test 'unit test string_refinements na?' do
+    assert @unjustified_project.release_notes_status.na?
+  end
+
+  test 'test get_satisfaction_data' do
+    basics = @unjustified_project.get_satisfaction_data('basics')
+    assert_equal '9/12', basics[:text]
+    assert_equal 'hsl(90, 100%, 50%)', basics[:color]
+    reporting = @unjustified_project.get_satisfaction_data('reporting')
+    assert_equal '5/8', reporting[:text]
+    assert_equal 'hsl(75, 100%, 50%)', reporting[:color]
+    quality = @unjustified_project.get_satisfaction_data('quality')
+    assert_equal '13/13', quality[:text]
+    assert_equal 'hsl(120, 100%, 50%)', quality[:color]
+  end
 end

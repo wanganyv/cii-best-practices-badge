@@ -116,6 +116,12 @@ The application is configured by various environment variables:
   project was last sent a reminder
 * RAILS_ENV (default 'development'): Rails environment.
   The master, staging, and production systems set this to 'production'.
+* BADGEAPP_DAY_FOR_MONTHLY: Day of the month to monthly activities, e.g.,
+  send out monthly reminders.  Default 5.  Set to 0 to disable monthly acts.
+* FASTLY_CLIENT_IP_REQUIRED: If present, download the Fastly list of
+  client IPs, and only let those IPs make requests.  Enabling this
+  counters cloud piercing.  This isn't on by default, but the environment
+  variables are set on our tiers.
 
 This can be set on Heroku.  For example, to change the maximum number
 of email reminders to inactive projects on production-bestpractices:
@@ -143,12 +149,12 @@ heroku config:set --app production-bestpractices TZ=:/usr/share/zoneinfo/UTC
 
 This section describes key application-specific terminology.
 
-The web application tracks data about many OSS *projects*,
+The web application tracks data about many FLOSS *projects*,
 as identified and entered by *users*.
 
 We hope that projects will (eventually) *achieve* a *badge*.
 A project must *satisfy* (or "pass") all *criteria*
-(singular: criterion) enough to achieve a badge.
+(singular: criterion) *enough* to achieve a badge.
 
 The *status* of each criterion, for a given project, can be one of:
 'Met', 'Unmet', 'N/A' (not applicable, a status that only some
@@ -284,7 +290,7 @@ are implemented.
 To modify the text of the criteria, edit these files:
 
 - doc/criteria.md - Document
-- ./criteria.yml - YAML file used by BadgeApp for criteria information.
+- criteria/criteria.yml - YAML file used by BadgeApp for criteria information.
 
 If you're adding/removing fields (including criteria), be sure to also edit
 app/views/projects/\_form.html.erb
@@ -364,6 +370,98 @@ modify the autofill code in the app/lib/ directory.
 
 Be sure to "git add" all new files, including any migration files,
 and then use "git commit" and "git push".
+
+## Internationalization (i18n) and localization (l10n)
+
+This application is "internationalized", that is, it allows
+users to select their locale, and then presents information
+(such as human-readable text) in the selected locale.
+If no locale is indicated, 'en' (English) is used.
+
+To learn more about Rails and internationalization, please read the
+[Rails Internationalization guide](http://guides.rubyonrails.org/i18n.html).
+
+We can *always* use help in localizing (that is, in providing translations
+of text to various locales) - please help!
+
+### Requesting the locale at run-time
+
+Users indicate the locale via the URL.
+The recommended form is at the beginning of that path, e.g.,
+<https://bestpractices.coreinfrastructure.org/fr/projects/>
+selects the locale "fr" (French) when displaying "/projects".
+This even works at the top page, e.g.,
+<https://bestpractices.coreinfrastructure.org/fr/>.
+It also supports the locale as a query parameter, e.g.,
+<https://bestpractices.coreinfrastructure.org/projects?locale=fr>
+
+### Fixing locale data
+
+Almost all locale-specific data is stored in the "config/locales"
+directory (one file for each locale, named LOCALE.yml). This data is
+automatically loaded by Rails.  A few of the static files are served
+directly, with a separate file for each locale;
+see the "app/views/static_pages" directory.
+If you need to fix a translation, that's where the data is.
+
+### Adding a new locale
+
+To add a new locale, modify the file "config/initializers/i18n.rb"
+and edit the assignment of "I18n.available_locales" to add
+the new locale.  The system will now permit users to request it.
+
+Next, create a stub locale file in the "config/locales" directory
+named LOCALE.yml.  A decent way to start is:
+
+~~~~
+cd config/locales
+cp en.yml NEW_LOCALE.yml
+~~~~
+
+Edit the top of the file to change "en:" to your locale name.
+
+At one time we suggested going to this page to get locale information
+for Rails built-ins, and including that:
+<https://github.com/svenfuchs/rails-i18n/blob/master/rails/locale/>
+However, we now include the gem 'rails-i18n', and that provides
+the same kind of functionality while being easier to maintain.
+
+Now create the matching static pages in the
+the "app/views/static_pages"  (cd "../..", then cd "app/views/static_pages",
+then create the files using the new locale name).
+Be sure all hypertext links to locations within the application
+include the locale (e.g., use "/fr/projects" not "/projects" as the URL);
+automatically-generated URLs include the locale, but constant strings do not.
+
+Now the hard part: actually translating.
+Edit the '.yml' (YAML) file to create the translations.
+As always, you need to conform to YAML syntax.
+For example,
+strings that end in a colon (":") *must* be escaped (e.g., by
+surrounding them with double-quotes).
+Keys are *only* in lower case and never use dash (they use underscore).
+
+### Programmatically accessing a locale
+
+To learn more about Rails and internationalization, please read the
+[Rails Internationalization guide](http://guides.rubyonrails.org/i18n.html).
+
+Inside views you can use the 't' helper, e.g.,
+
+~~~~
+    <%= t('hello') %>
+    <%= t('.current_scope') %>
+~~~~
+
+Inside other code (e.g., in a flash message), use `I18n.t`:
+
+~~~~
+    I18n.t 'hello'
+~~~~
+
+You can access 'I18n.locale' to see the current locale's value
+(this is a thread-local query, so this works fine when multiple
+threads are active).
 
 ## App authentication via GitHub
 
@@ -469,12 +567,49 @@ heroku pg:backups capture
 curl -o latest.dump $(heroku pg:backups public-url)
 ~~~~
 
+## Recovering a deleted or mangled project entry
+
+If you want to restore a deleted project, or reset its values,
+we have some tools to help.
+
+Put the project data in JSON form in the file "project.json"
+(at the top of the tree, typically in "~/cii-best-practices-badge").
+If this was a recent deletion, then you can simply copy the JSON-formatted
+data from the email documenting the deletion.
+
+Then run:
+
+~~~~
+    rake create_project_insertion_command
+~~~~
+
+This will create a file "project.sql" that has SQL insertion command.
+
+You'll next need to delete the project if it already exists, because
+it's an insertion command.
+
+Now you need to execute the SQL command on the correct database.
+Locally you can do this (you may want to set RAILS_ENV to
+"production"):
+
+~~~~
+    rails db < project.sql
+~~~~
+
+If you want the data to be on the true production site, you'll need
+privileges to execute database commands, then run this:
+
+~~~~
+    heroku pg:psql --app production-bestpractices < project.sql
+~~~~
+
 ## Purging Fastly CDN cache
 
-If a change in the application causes any badge level(s) to change,
+If a change in the application causes any badge level(s) to change or
+changes the output of a projects json file,
 you need to purge the Fastly CDN cache after pushing.
 Otherwise, the Fastly CDN cache will continue to serve the old badge
-images (until they time out).
+images as well as project json files (until they time out).
 
 You can purge the Fastly CDN cache this way (assuming you're
 allowed to log in to the relevant Heroku app):

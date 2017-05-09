@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'capybara_feature_test'
 include ActionView::Helpers::TextHelper
 
@@ -35,12 +36,15 @@ class LoginTest < CapybaraFeatureTest
     visit login_path
     assert_equal current_path, root_path
 
-    visit edit_project_path(@project)
+    visit edit_project_path(@project, locale: nil)
+    assert has_content? 'We have updated our requirements for the criterion ' \
+                        'static_analysis. Please add a justification for '\
+                        'this criterion.'
 
     fill_in 'project_name', with: 'It doesnt matter'
     # Below we are clicking the final save button, it has a value of ''
     click_button('Save', exact: true)
-    assert_equal current_path, edit_project_path(@project)
+    assert_equal current_path, edit_project_path(@project, locale: nil)
     assert has_content? 'Project was successfully updated.'
     # TODO: Get the clicking working again with capybara.
     # Details: If we expand all panels first and dont click this test passes.
@@ -56,10 +60,13 @@ class LoginTest < CapybaraFeatureTest
 
     ensure_choice 'project_contribution_status_met' # No URL given, so fails
     assert_match QUESTION, find('#contribution_enough')['src']
+    fill_in 'project_contribution_justification',
+            with: 'For more information see: http://www.example.org/'
+    wait_for_jquery
+    assert_match CHECK, find('#contribution_enough')['src']
 
     ensure_choice 'project_contribution_requirements_status_unmet' # No URL
-    # Does not work on David A. Wheeler's machine:
-    # assert_match QUESTION, find('#contribution_requirements_enough')['src']
+    assert_match QUESTION, find('#contribution_requirements_enough')['src']
 
     refute has_content? 'repo_public'
     find('#changecontrol').click

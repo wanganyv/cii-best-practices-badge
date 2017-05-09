@@ -89,10 +89,10 @@ Upgrade some "passing" level SHOULD and SUGGESTED:
 
 #### Upgrade: Reporting
 
-*   Upgrade
+*   Unchanged:
 
-    - enhancement_responses: SHOULD to MUST.
-      "The project MUST respond to a majority of enhancement requests in the
+    - enhancement_responses:
+      "The project SHOULD respond to a majority of enhancement requests in the
       last 2-12 months (inclusive)."
 
 #### Upgrade: Quality
@@ -110,8 +110,7 @@ Upgrade some "passing" level SHOULD and SUGGESTED:
     Projects MUST be maximally strict with warnings, where practical.
     <sup>[<a href="#warnings_strict">warnings_strict</a>]</sup>
 
-    *Details*: Some warnings cannot be effectively enabled on some projects,
-    or specific exceptions must be given.
+    *Details*: Some warnings cannot be effectively enabled on some projects.
     What is needed is evidence that the project is striving to enable
     warning flags where it can, so that errors are detected early.
 
@@ -145,24 +144,18 @@ Upgrade some "passing" level SHOULD and SUGGESTED:
 #### Upgrade: Security
 
 *   Upgrade crypto_weaknesses from SHOULD to MUST.
-    "The project security mechanisms MUST NOT by default depend on
-    cryptographic algorithms with known serious weaknesses (e.g., SHA-1)."
+    The default security mechanisms within the software produced
+    by the project MUST NOT depend on
+    cryptographic algorithms or modes with known serious weaknesses
+    (e.g., the SHA-1 cryptographic hash algorithm or the CBC mode in SSH).
 
 *   Unchanged:
 
-    - crypto_call -
-      "If the project software is an application or library, and
-      its primary purpose is not to implement cryptography, then it
-      SHOULD only call on software specifically designed to implement
-      cryptographic functions; it SHOULD NOT re-implement its own."
+    - crypto_call
 
-    - crypto_pfs -
-      "The project SHOULD implement perfect forward secrecy for key
-      agreement protocols so a session key derived from a set of
-      long-term keys cannot be compromised if one of the long-term keys
-      is compromised in the future."
+    - crypto_pfs
 
-    - vulnerabilities_critical_fixed -
+    - vulnerabilities_critical_fixed
       "Projects SHOULD fix all critical vulnerabilities rapidly after
       they are reported."
 
@@ -185,19 +178,15 @@ Upgrade some "passing" level SHOULD and SUGGESTED:
     proprietary (and some developers will therefore not use it).
 
 *   Upgrade dynamic_analysis_unsafe from SUGGESTED to MUST.
-    "<i>If</i> the software is application-level software
-    written using a memory-unsafe language (e.g., C or C++),
+    <i>If</i> the software produced by the project includes
+    software written using a memory-unsafe language (e.g., C or C++),
     <i>then</i> the project MUST use
-    at least one dynamic tool (e.g., a fuzzer or web application scanner)
-    routinely along with a mechanism to detect
-    memory safety problems such as buffer overwrites."
-
-    This reorders the "passing" level text, which reads as follows:
-    "It is SUGGESTED that if the software is application-level software
-    written using a memory-unsafe language (e.g., C or C++) then at
-    least one dynamic tool (e.g., a fuzzer or web application scanner)
-    be routinely used with a mechanism to detect memory safety problems
-    such as buffer overwrites.
+    at least one dynamic tool (e.g., a fuzzer or web
+    application scanner) be routinely used in combination with
+    a mechanism to detect memory safety problems such as buffer
+    overwrites.
+    If the project does not produce software written
+    in a memory-unsafe language, choose "not applicable" (N/A).
 
     *NOTE*:
     This would mean that C/C++ would be required to use something like
@@ -268,11 +257,12 @@ as described below.
     post it in a standard location.
     <sup>[<a href="#code_of_conduct">code_of_conduct</a>]</sup>
 
-    *Rationale*: Projects may be able to improve the civility of their
+    *Details*: Projects may be able to improve the civility of their
     community and to set expectations about acceptable conduct by adopting a
     code of conduct. This can help avoid problems before they occur and make
-    the project a more welcoming place to encourage contributions. Example
-    codes of conduct are the
+    the project a more welcoming place to encourage contributions.
+    This should focus only on behavior within the community/workplace of the
+    project.  Example codes of conduct are the
     <a href="http://contributor-covenant.org/">Contributor Covenant Code of Conduct</a>
     and the Linux kernel
     <a href="https://www.kernel.org/doc/html/latest/process/code-of-conflict.html">Code of Conflict</a>.
@@ -331,16 +321,6 @@ as described below.
     information when people change roles.
     The goal is to make underlying assumptions clear.
 
-*   <a name="documentation_design"></a>The project MUST include documentation of
-    its high-level design (aka architecture), that is, documentation that
-    identifies its major components and how they interact.
-    <sup>[<a href="#documentation_design">documentation_design</a>]</sup>
-
-    *Rationale*: Documenting the basic design makes it easier for potential
-    new developers to understand its basics.
-    This is related to know_secure_design, as well
-    as implement_secure_design and proposed documentation_security.
-
 #### Documentation
 
 *   <a name ="documentation_roadmap"></a>The project MUST have a documented
@@ -354,18 +334,27 @@ as described below.
     project. It need not be detailed.
 
 *   <a name="documentation_architecture"></a>
-    The project MUST include reference documentation that describes
-    its software architecture.
+    The project MUST include documentation
+    of the architecture (aka high-level design) of the software
+    produced by the project.
+    If the project does not produce software,
+    select "not applicable" (N/A).
+    <sup>[<a href="#documentation_architecture">documentation_architecture</a>]</sup>
+
+    *Details*:
     A software architecture explains a program's fundamental structures,
     i.e., the program's major components, the relationships among them, and
     the key properties of these components and relationships.
-    <sup>[<a href="#documentation_architecture">documentation_architecture</a>]</sup>
+
+    *Rationale*: Documenting the basic design makes it easier for potential
+    new developers to understand its basics.
+    This is related to know_secure_design, as well
+    as implement_secure_design and proposed documentation_security.
 
 *   <a name="documentation_quick_start"></a>
     The project MUST provide a "quick start" guide for new users
     to help them quickly do something with the software.
     <sup>[<a href="#documentation_quick_start">documentation_quick_start</a>]</sup>
-
     *Details*:
     The idea is to show users how to get started and make the software do
     anything at all. This is critically important for potential users to
@@ -385,7 +374,8 @@ as described below.
 *   <a name="documentation_current"></a>
     The project MUST make an effort to
     keep the documentation consistent with the current version of the
-    program and any known documentation defects making it inconsistent
+    project results (including software produced by the project).
+    Any <i>known</i> documentation defects making it inconsistent
     MUST be fixed.
     If the documentation is generally current, but erroneously
     includes some older information that is no longer true,
@@ -426,16 +416,44 @@ as described below.
     other projects will be encouraged to follow suit and also make those
     achievements, benefitting everyone.
 
-#### Accessibility
+#### Other
+
+*   <a name ="sites_password_security"></a>
+    If the project sites (website, repository, and download URLs)
+    store passwords for authentication of external users, the passwords
+    MUST be stored as iterated hashes with a per-user salt by
+    using a key stretching (iterated) algorithm (e.g., PBKDF2, Bcrypt
+    or Scrypt).
+    If the project sites do not store passwords for this purpose,
+    select N/A.
+
+    *Details*:
+    Note that the use of
+    <a href="https://help.github.com/articles/github-security/">GitHub</a>
+    meets this criterion.
+    This criterion only applies to passwords used for authentication of
+    external users into the project sites.
+    If the project sites must log in to other sites, they may need to store
+    passwords for that purpose differently (since using an algorithm like
+    Bcrypt would make those passwords useless).
+    This applies criterion crypto_password_storage
+    to the project sites, similar to sites_https.
+
+#### Accessibility and Internationalization
 
 *   <a name ="accessibility_best_practices"></a>
-    Accessibility best practices SHOULD be followed so that
+    The project (both project sites and project results) SHOULD
+    follow accessibility best practices so that
     persons with disabilities can still participate in the project and
     use the project results where it is reasonable to do so.
     <sup>[<a href="#accessibility_best_practices">accessibility_best_practices</a>]</sup>
 
     *Details*:
     For web applications, see the
+    <a href="https://www.w3.org/TR/WCAG20/">Web Content Accessibility
+    Guidelines (WCAG 2.0)</a> and its supporting document
+    <a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/Overview.html">Understanding WCAG 2.0</a>;
+    see also
     <a href="https://www.w3.org/standards/webdesign/accessibility">W3C accessibility information</a>.
     For GUI applications, consider using the environment-specific
     accessibility guidelines (such as
@@ -453,17 +471,58 @@ as described below.
     This criterion is often N/A, e.g., for program libraries.
     Here are some examples of actions to take or issues to consider:
 
-    - Neither color nor sound SHOULD be used as the only way information
-      is conveyed
-    - Color combinations SHOULD be tested in a high-contrast environment
-    - If the software uses flashing or animation it SHOULD grant the user
-      control to disable it
-    - All applications SHOULD be tested for keyboard-only navigation
-    - A GUI or web-based project SHOULD test with at least one
+    <ul>
+    <li>Provide text alternatives for any non-text content so
+      that it can be changed into other forms people need, such as
+      large print, braille, speech, symbols or simpler language (<a
+      href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/text-equiv.html">WCAG
+      2.0 guideline 1.1</a>)
+    <li>Color is not used as the only visual means of conveying
+      information, indicating an action, prompting a response, or
+      distinguishing a visual element. (<a
+      href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-without-color.html">WCAG
+      2.0 guideline 1.4.1</a>)
+    <li>The visual presentation of text and images of text has a contrast
+      ratio of at least 4.5:1, except for large text, incidental text,
+      and logotypes (<a
+      href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">WCAG
+      2.0 guideline 1.4.3</a>)
+    <li>Make all functionality available from a keyboard (WCAG guideline 2.1)
+    <li>A GUI or web-based project SHOULD test with at least one
       screen-reader on the target platform(s) (e.g. NVDA, Jaws, or WindowEyes
       on Windows; VoiceOver on Mac & iOS; Orca on Linux/BSD; TalkBack on
       Android). TUI programs MAY work to reduce overdraw to prevent redundant
       reading by screen-readers.
+    </ul>
+
+*   <a name="internationalization"></a>
+    The software produced by the project SHOULD be internationalized to enable
+    easy localization for the target audience's culture, region, or
+    language.
+    If internationalization (i18n) does not apply (e.g., the software
+    doesn't generate text intended for end-users and
+    doesn't sort human-readable text), select "not applicable" (N/A).
+    <sup>[<a href="#internationalization">internationalization</a>]</sup>
+
+    Details:
+    Localization "refers to the adaptation of a product, application or
+    document content to meet the language, cultural and other requirements
+    of a specific target market (a locale)."
+    Internationalization is the "design and development of a product,
+    application or document content that enables easy localization for
+    target audiences that vary in culture, region, or language."
+    (See <a href="https://www.w3.org/International/questions/qa-i18n">W3C's "Localization vs. Internationalization"</a>.)
+    Software meets this criterion simply by being internationalized.
+    No localization for another specific language is required, since
+    once software has been internationalized it's possible for others
+    to work on localization.
+
+    Rationale:
+    When software is internationalized, the software can be used by far
+    more people.  By itself, that's valuable.
+    In addition, software that can be used by far more people is more
+    likely to lead to larger communities, which increases the likelihood
+    of contributions and reviews.
 
 #### Continuity
 
@@ -759,10 +818,18 @@ as described below.
     <a href="https://lwn.net/Articles/713175/">"LZ4: vendoring in the kernel"
     by Jonathan Corbet (LWN, February 1, 2017)</a>, based on a
     2017 linux.conf.au talk by Robert Lefkowitz.
-    Lefkowitz talked about the process of "vendoring" — the copying
+    Lefkowitz talked about the process of "vendoring" - the copying
     of code from other projects into one's own repository rather than
     accepting a dependency on those projects - and
     LZ4 in the Linux kernel.
+
+*   <a name="interfaces_current"></a>
+    The project SHOULD avoid using deprecated or obsolete functions
+    and APIs where FLOSS alternatives are available in the set of
+    technology it uses (its "technology stack") and to a supermajority
+    of the users the project supports (so that users have ready access
+    to the alternative).
+    <sup>[<a href="#interfaces_current">interfaces_current</a>]</sup>
 
 #### Build
 
@@ -851,7 +918,8 @@ as described below.
 
 *   <a name="installation_common"></a>(Future criterion)
     The project MUST provide a way for end-users to easily install and
-    uninstall the software using a commonly-used convention.
+    uninstall the software produced by the project
+    using a commonly-used convention.
     <sup>[<a href="#installation_common">installation_common</a>]</sup>
 
     *Details*: Examples include using a language-level package manager (such as npm,
@@ -912,7 +980,7 @@ as described below.
     Note that in some cases principles will conflict, in which case
     a choice must be made
     (e.g., many mechanisms can make things more complex, contravening
-    "economy of mechanism" / keep it simple)
+    "economy of mechanism" / keep it simple).
     If the project is not producing software, this may be N/A.
 
     *Rationale*:
@@ -937,7 +1005,8 @@ as described below.
     (e.g., a file uploader), but these would typically be rare.
 
 *   <a name="hardening"></a>(Future criterion) Hardening mechanisms
-    SHOULD be used so software defects are less likely to result in security
+    SHOULD be used in the software produced by the project
+    so that software defects are less likely to result in security
     vulnerabilities.<sup>[<a href="#hardening">hardening</a>]</sup>
 
     *Details*: Hardening mechanisms may include HTTP headers like Content
@@ -950,10 +1019,27 @@ as described below.
 
 *   <a name="documentation_security"></a>
     The project MUST document what the user can and cannot expect
-    in terms of security.  This MUST identify the security requirements
-    that the software is intended to meet and a justification
-    ("assurance case") for why they are believed to have been met.
+    in terms of security from the software produced by the project.
+    The project MUST identify the security requirements
+    that the software is intended to meet and an
+    assurance case that justifies why these requirements are met.
+    The assurance case MUST include: a description of the threat model,
+    clear identification of trust boundaries, and
+    evidence that common security weaknesses have been countered.
     <sup>[<a href="#documentation_security">documentation_security</a>]</sup>
+
+    *Details*:
+    An assurance case is
+    "a documented body of evidence that provides a convincing and valid
+    argument that a specified set of critical claims regarding a system’s
+    properties are adequately justified for a given application in a given
+    environment"
+    (<a href="http://nvlpubs.nist.gov/nistpubs/ir/2009/ir7608.pdf">"Software
+    Assurance Using Structured Assurance Case Models", Thomas Rhodes et al,
+    NIST Interagency Report 7608</a>).
+    Trust boundaries are
+    boundaries where data or execution changes its level of trust, e.g.,
+    a server's boundaries in a typical web application.
 
     *Rationale*: Writing the specification helps the developers think about the
     interface (including the API) the developers are providing, as well
@@ -997,7 +1083,8 @@ as described below.
     (N/A allowed).
     <sup>[<a href="#crypto_credential_agility">crypto_credential_agility</a>]</sup>
 
-*   <a name="crypto_used_network"></a>(Future, tweaked) The project
+*   <a name="crypto_used_network"></a>(Future) The
+    software produced by the project
     SHOULD support secure protocols for all of its network
     communications, such as SSHv2 or later, TLS1.2 or later (HTTPS),
     IPsec, SFTP, and SNMPv3. Insecure protocols such as FTP, HTTP, telnet,
@@ -1006,14 +1093,20 @@ as described below.
     <sup>[<a href="#crypto_used_network">crypto_used_network</a>]</sup>
 
 *   <a name="crypto_tls12"></a>(Future)
-    The project SHOULD, if it supports TLS, support at least TLS version 1.2.
+    The software produced by the project SHOULD,
+    if it supports or uses TLS, support at least TLS version 1.2.
     Note that the predecessor of TLS was called SSL.
+    If the software does not use TLS,
+    select "not applicable" (N/A).
     (N/A allowed).
     <sup>[<a href="#crypto_tls12">crypto_tls12</a>]</sup>
 
 *   <a name="crypto_certificate_verification"></a>(Future)
-    The project MUST, if it supports TLS, perform TLS certificate verification
+    The software produced by the
+    project MUST, if it supports TLS, perform TLS certificate verification
     by default when using TLS, including on subresources.
+    If the software does not use TLS,
+    select "not applicable" (N/A).
     (N/A allowed).
     <sup>[<a href="#crypto_certificate_verification">crypto_certificate_verification</a>]</sup>
 
@@ -1024,7 +1117,8 @@ as described below.
     and
     <a href="https://blogs.gnome.org/mcatanzaro/2016/03/12/do-you-trust-this-application/">"Do you trust this application?" by Michael Catanzaro</a>.
 
-*   <a name="crypto_verification_private"></a>(Future) The project
+*   <a name="crypto_verification_private"></a>(Future)
+    The software produced by the project
     MUST, if it supports TLS, perform certificate verification before sending
     HTTP headers with private information (such as secure cookies).
     (N/A allowed).
@@ -1033,16 +1127,25 @@ as described below.
 #### Secure Release
 
 *   <a name="signed_releases"></a>
-    Project releases of the software intended for widespread use
-    MUST be cryptographically signed, there MUST be a documented
+    The project MUST cryptographically sign
+    releases of the project results intended for widespread use, and
+    there MUST be a documented
     process explaining to users how they can obtain the public signing keys
-    and verify the signature. The private key for this signature MUST NOT
+    and verify the signature(s).
+    The private key for these signature(s) MUST NOT
     be on site(s) used to directly distribute the software to the public.
-    This includes both source code and executables (where applicable).
-    Executables MAY be signed separately from source code.
-    These may be implemented as signed git tags
-    (using cryptographic digital signatures).
     <sup>[<a href="#signed_releases">signed_releases</a>]</sup>
+
+    *Details*:
+    The project results include both source code and any
+    generated deliverables where applicable (e.g., executables,
+    packages, and containers).
+    Generated deliverables MAY be signed separately from source code.
+    These MAY be implemented as signed git tags
+    (using cryptographic digital signatures).
+    Projects MAY provide generated results separately
+    from tools like git, but in those cases, the separate results
+    MUST be separately signed.
 
     *Rationale*:
     This provides protection from compromised distribution systems.
@@ -1056,6 +1159,21 @@ as described below.
     Node.js implements this via GPG keys in the README, but note that
     in the criterion we are intentionally more general:
     <a href="https://github.com/nodejs/node#release-team">Node.js Release Team</a>
+
+*   <a name="version_tags_signed"></a>
+    It is SUGGESTED that in the version control system,
+    each important version tag (a tag that is part of a major
+    release, minor release, or fixes publicly noted vulnerabilities)
+    be cryptographically signed and verifiable as described in
+    <a href="#signed_releases">signed_releases</a>.
+    <sup>[<a href="#version_tags_signed">version_tags_signed</a>]</sup>
+
+    *Details*: See also
+    <a href="#signed_releases">signed_releases</a> and
+    <a href="#version_tags">version_tags</a>.
+
+    *Rationale*: This was suggested by Kevin W. Wall (@kwwall)
+    in issue #709.
 
 ### Analysis
 
@@ -1255,6 +1373,7 @@ as described below.
 *   <a name="copyright_per_file"></a>
     The project MUST include a copyright statement in each source file,
     identifying at least one relevant year and copyright holder.
+    <sup>[<a href="#copyright_per_file">copyright_per_file</a>]</sup>
 
     *Details*:
     This MAY be done by including the following inside a comment
@@ -1274,7 +1393,7 @@ as described below.
     permission. Explicit notices can help you prove that you and your
     collaborators really are the copyright holders. They can serve to put
     a potential infringer on notice by providing an informal sniff test to
-    counter the “Oh yeah, well I didn’t know it was copyrighted”
+    counter the 'Oh yeah, well I didn’t know it was copyrighted'
     defense. For some users the copyright notice may suggest higher
     quality, as they expect that good software will include a notice...
     Git can track these things, but people may receive software outside
@@ -1395,6 +1514,13 @@ as described below.
     2FA, by itself, does not meet this criterion, since it is not encrypted.
     <sup>[<a href="#secure_2FA">secure_2FA</a>]</sup>
 
+    *Details*: A 2FA mechanism that meets this criterion would be a
+    Time-based One-Time Password (TOTP) application that
+    automatically generates an authentication code that changes
+    after a certain period of time.
+    Note that
+    <a href="https://help.github.com/articles/configuring-two-factor-authentication-via-a-totp-mobile-app/">GitHub supports TOTP</a>.
+
     *Rationale*: SMS is easier and lower cost for many people,
     but it also provides much weaker security.  It has been argued
     that SMS isn't really 2FA at all; we permit it, because it's better
@@ -1508,16 +1634,15 @@ as described below.
 
 *   <a name="security_review"></a>
     The project MUST have performed a security review within the last 5 years.
-    (N/A allowed).
+    This review MUST consider the security requirements and security
+    boundary.
     <sup>[<a href="#security_review">security_review</a>]</sup>
 
     *Details*:
-    This can be by the project members and/or an independent evaluation.
+    This MAY be done by the project members and/or an independent evaluation.
     This evaluation MAY be supported by static and dynamic analysis tools,
-    but there also must be human review to identify problems (paricularly
+    but there also must be human review to identify problems (particularly
     in design) that tools cannot detect.
-    Projects that do not have any results that have security implications
-    may select N/A.
 
     *Rationale*:
     Security review is important, because security problems often come from
@@ -1533,6 +1658,9 @@ as described below.
     SAST assisted), and when applicable, some sort of DAST (for APIs,
     probably just fuzzing), where failed tests would have to be added
     to the regression test suite."
+    It's difficult to get agreement on the details of what a security
+    review must include, but we believe that the stated criteria would
+    be agreed on.
 
 *   <a name="hardened_site"></a>
     hardened_site (Future)</br>
